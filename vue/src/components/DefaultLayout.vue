@@ -195,12 +195,18 @@ export default {
         const router = useRouter();
 
         function logout() {
+            store.dispatch("logout").then(() => {
+                router.push({
+                    name: "Login",
+                });
+            });
+            /*
             //komituje mutation????
             store.commit("logout");
             //kad koristimo logout redirektujemo korisnika na Login stranu
             router.push({
                 name: "Login",
-            });
+            });*/
         }
 
         //ovde vracamo funkcije, promenljive... kako bi bile dostupne u komponenti

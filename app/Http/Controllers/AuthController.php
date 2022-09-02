@@ -62,4 +62,14 @@ class AuthController extends Controller
             'token_type' => 'Bearer'
         ]);
     }
+
+    public function logout()
+    {
+        $user = Auth::user();
+        $user->currentAccessToken()->delete();
+
+        return response([
+            'success' => true
+        ]);
+    }
 }

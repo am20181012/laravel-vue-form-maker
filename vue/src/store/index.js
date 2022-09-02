@@ -42,12 +42,20 @@ const store = createStore({
         return data;
       });
     },
+
+    logout({ commit }) {
+      return axiosClient.post("/logout").then((response) => {
+        commit("logout");
+        return response;
+      });
+    },
   },
   mutations: {
     //resetujemo podatke o korisniku i njegov token
     logout: (state) => {
       state.user.data = {};
       state.user.token = null;
+      sessionStorage.removeItem("TOKEN");
     },
     setUser: (state, userData) => {
       state.user.token = userData.token;
