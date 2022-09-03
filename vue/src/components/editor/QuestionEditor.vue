@@ -1,6 +1,7 @@
 <template>
-    <!-- Question index -->
+    <!-- Question -->
     <div class="flex items-center justify-between">
+        <!-- redni broj pitanja i pitanje-->
         <h3 class="text-lg font-bold">{{ index + 1 }}. {{ model.question }}</h3>
 
         <div class="flex items-center">
@@ -53,6 +54,7 @@
     <div class="grid gap-3 grid-cols-12">
         <!-- Question -->
         <div class="mt-3 col-span-9">
+            <!-- Question Text -->
             <label
                 :for="'question_text_' + model.data"
                 class="block text-sm font-medium text-gray-700"
@@ -110,6 +112,7 @@
 
     <!-- Data -->
     <div>
+        <!--proveravamo da li taj tip pitanja ima opcije-->
         <div v-if="shouldHaveOptions()" class="mt-2">
             <h4
                 class="text-sm font-semibold mb-1 flex justify-between items-center"
@@ -139,6 +142,7 @@
                 <!--/ Add new option -->
             </h4>
 
+            <!--ovde proveravamo da li trenutno pitanje nema ni jednu definisanu opciju-->
             <div
                 v-if="!model.data.options.length"
                 class="text-xs text-gray-600 text-center py-3"
@@ -146,6 +150,7 @@
                 You don't have any options defined
             </div>
             <!-- Option list -->
+            <!--iteriramo kroz opcije pitanja i prikazujemo ih-->
             <div
                 v-for="(option, index) in model.data.options"
                 :key="option.uuid"
@@ -192,23 +197,29 @@ import { ref, computed } from "vue";
 import store from "../../store";
 import { v4 as uuidv4 } from "uuid";
 
+//definicija propertija ove komponente
 const props = defineProps({
     question: Object,
     index: Number,
 });
 
+//predefinisana funkcija gde definisemo dogadjaje koji se emituju nadredjenoj komponenti...
 const emit = defineEmits(["change", "addQuestion", "deleteQuestion"]);
 
 //uklanja nam direktnu referencu na "pravi" question objekat
 //ovde cemo menjati neke stvari nad modelom pa nam ne treba direktna referenca da ne bi doslo do nezeljenih rezultat
 const model = ref(JSON.parse(JSON.stringify(props.question)));
 
+//uzimamo tipove pitanja definisane u store.js
 const questionTypes = computed(() => store.state.questionTypes);
 
+//funkcija za veliko pocetno slovo
 function upperCaseFirst(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+//funkcija za proveru da li treba pitanje da ima opcije ili ne
+//samo proverava da li je tip pitanja iz modela jedan od ova tri tipa
 function shouldHaveOptions() {
     return ["select", "radio", "checkbox"].includes(model.value.type);
 }
@@ -221,16 +232,21 @@ function setOptions(options) {
     model.value.data.options = options;
 }
 
+//dodaje praznu opciju
 function addOption() {
     setOptions([...getOptions(), { uuid: uuidv4(), text: "" }]);
     dataChange();
 }
 
+//filtrira opcije ostavljajuci sve one koje nisu iste trenutnoj opciji
+//pravimo novu listu opcija bez trenutne opcije samo
 function removeOption(op) {
     setOptions(getOptions().filter((opt) => opt !== op));
     dataChange();
 }
 
+//kada se menja tip pitanja proverava da li taj tip ima opcije pa postavlja opcije na postojece ili prazan niz
+//omogucava da se stare opcije ne izgube
 function typeChange() {
     if (shouldHaveOptions()) {
         setOptions(getOptions() || []);
@@ -238,6 +254,9 @@ function typeChange() {
     dataChange();
 }
 
+//emitovanje dogadjaja ka visoj komponenti
+
+//klonira preko JSON-a vrednosti modela i onda brise opcije ako taj tip pitanja nema opcije, da ne bi ostale od pre
 function dataChange() {
     const data = JSON.parse(JSON.stringify(model.value));
     if (!shouldHaveOptions()) {
@@ -247,9 +266,12 @@ function dataChange() {
     emit("change", data);
 }
 
+//emitujemo dogadjaj dodavanja pitanja i treba samo da prosledimo indeks trenutnog pitanja + 1 (redni broj)
 function addQuestion() {
     emit("addQuestion", props.index + 1);
 }
+
+//prosledjujemo samo pitanje koje zelimo da obrisemo
 function deleteQuestion() {
     emit("deleteQuestion", props.question);
 }

@@ -1,15 +1,19 @@
 <template>
     <PageComponent>
+        <!--heder strane na kojoj se prikazuje svaka forma zasebno-->
         <template v-slot:header>
             <div class="flex items-center justify-between">
+                <!--samo ispituje ima li model id, ako ne onda znaci da cemo dodavati novu formu pa je naslov drugaciji-->
                 <h1 class="text-3xl font-bold text-gray-900">
                     {{ model.id ? model.title : "Create a Form" }}
                 </h1>
             </div>
         </template>
+        <!--kraj hedera-->
+
         <form @submit.prevent="saveForm">
             <div class="shadow sm:rounded-md sm:overflow-hidden">
-                <!-- Form Fields -->
+                <!--polja forme-->
                 <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
                     <!-- Image -->
                     <div>
@@ -17,6 +21,7 @@
                             Image
                         </label>
                         <div class="mt-1 flex items-center">
+                            <!--preko vue modela proveravamo ima li slike i na osnovu toga kazemo sta da prikaze-->
                             <img
                                 v-if="model.image"
                                 :src="model.image"
@@ -40,10 +45,12 @@
                                     />
                                 </svg>
                             </span>
+                            <!--ovde je dugme za ucitavanje slike-->
                             <button
                                 type="button"
                                 class="relative overflow-hidden ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
+                                <!--ovde trigerujemo file picker-->
                                 <input
                                     type="file"
                                     class="absolute left-0 top-0 right-0 bottom-0 opacity-0 cursor-pointer"
@@ -133,6 +140,7 @@
                     <!--/ Status -->
                 </div>
 
+                <!-- Questions -->
                 <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
                     <h3
                         class="text-2xl font-semibold flex items-center justify-between"
@@ -160,6 +168,8 @@
                         </button>
                         <!--/ Add new question -->
                     </h3>
+                    <!--ispitujemo ima li ova forma pitanja i ukoliko ima iteriramo kroz njih i jedan po jedan
+                        saljemo QuestionEditor komponenti-->
                     <div
                         v-if="!model.questions.length"
                         class="text-center text-gray-600"
@@ -170,6 +180,8 @@
                         v-for="(question, index) in model.questions"
                         :key="question.id"
                     >
+                        <!--ovde se prosledjuje pitanje i indeks tog pitanja u nizu i postavljaju se osluskivaci
+                        koji se trigeruju kada se pitanja promene, obrisu...-->
                         <QuestionEditor
                             :question="question"
                             :index="index"
@@ -179,6 +191,9 @@
                         />
                     </div>
                 </div>
+                <!--/ Questions -->
+
+                <!-- Save -->
                 <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
                     <button
                         type="submit"
@@ -202,6 +217,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const route = useRoute();
 
+//ovde referenciramo prazan model, sto je ok kada se otvori stranica za dodavanje nove forme
 let model = ref({
     title: "",
     status: false,
@@ -211,12 +227,17 @@ let model = ref({
     questions: [],
 });
 
+//ovde pravimo model ukoliko je pozvana stranica za izmenu podataka forme
+//pristupa se pozvanoj ruti i ukoliko sadrzi parametar id onda se modelu dodeljuju vrednosti one
+//forme iz store.js za koja ima isti id kao sto je prosledjen id parametar u ruti
 if (route.params.id) {
     model.value = store.state.forms.find(
         (f) => f.id === parseInt(route.params.id)
     );
 }
 
+//kada se okin dogadjaj addQuestion, odnosno kad niza komponenta emituje neki dogadjaj...
+//pravi novo pitanje, dodeljuje nov id, a ostala polja postavlja na default
 function addQuestion(index) {
     const newQuestion = {
         id: uuidv4(),
@@ -229,6 +250,7 @@ function addQuestion(index) {
     model.value.questions.splice(index, 0, newQuestion);
 }
 
+//slicno kao za opcije u QuestionEditor-u, setujemo pitanja na sva ona ciji id nije isti onom koji je prosledjen
 function deleteQuestion(question) {
     model.value.questions = model.value.questions.filter((q) => q !== question);
 }

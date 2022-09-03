@@ -1,8 +1,10 @@
 <template>
     <PageComponent>
+        <!--heder strane na kojoj se prikazuju forme-->
         <template v-slot:header>
             <div class="flex justify-between items-center">
                 <h1 class="text-3xl font-bold text-gray-900">Forms</h1>
+                <!--ovde je dugme za dodavanje nove forme obavijeno router-linkom kako bi nas navigiralo na odgovarajucu stranu-->
                 <router-link
                     :to="{ name: 'FormCreate' }"
                     class="py-2 px-3 text-white bg-emerald-500 rounded-md hover:bg-emerald-600"
@@ -25,23 +27,33 @@
                 </router-link>
             </div>
         </template>
+        <!--kraj hedera-->
+
+        <!--omotac za sve kartice sa formama-->
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
+            <!--od ovog div-a se iterira kroz forme i prikazuju osnovni podaci o njima-->
             <div
                 v-for="form in forms"
                 :key="form.id"
                 class="flex flex-col py-4 px-6 shadow-md bg-white hover:bg-gray-50 h-[470px]"
             >
+                <!--Image-->
                 <img
                     :src="form.image"
                     alt=""
                     class="w-full h-48 object-cover"
                 />
+                <!--Title-->
                 <h4 class="mt-4 text-lg font-bold">{{ form.title }}</h4>
+                <!--Description-->
                 <div
                     v-html="form.description"
                     class="overflow-hidden flex-1"
                 ></div>
+                <!--wrapper for buttons - za izmenu i brisanje-->
                 <div class="flex justify-between items-center mt-3">
+                    <!--dugme za izmenu, link koji vodi na stranicu za izmenu forme, ali se prosledjuje i parametar koji je id forme-->
+                    <!--na taj nacin cemo na novoj strani imati podatke o formi, preko njenog id-a-->
                     <router-link
                         :to="{ name: 'FormView', params: { id: form.id } }"
                         class="flex py-2 px-4 border border-transparent text-sm rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -61,6 +73,7 @@
                             /></svg
                         >Edit</router-link
                     >
+                    <!--dugme za brisanje koje brise celu formu na dogadjaj (klik)-->
                     <button
                         v-if="form.id"
                         type="button"
@@ -91,6 +104,7 @@ import PageComponent from "../components/PageComponent.vue";
 import store from "../store";
 import { computed } from "vue";
 
+//kupimo sve forme iz stora-a
 const forms = computed(() => store.state.forms);
 
 function deleteForm(form) {
