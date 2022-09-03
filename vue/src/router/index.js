@@ -6,6 +6,7 @@ import Dashboard from "../view/Dashboard.vue";
 import Forms from "../view/Forms.vue";
 import store from "../store";
 import AuthLayout from "../components/AuthLayout.vue";
+import FormView from "../view/FormView.vue";
 
 const routes = [
   {
@@ -28,6 +29,16 @@ const routes = [
         path: "/forms",
         name: "Forms",
         component: Forms,
+      },
+      {
+        path: "/forms/create",
+        name: "FormCreate",
+        component: FormView,
+      },
+      {
+        path: "/forms/:id",
+        name: "FormView",
+        component: FormView,
       },
     ],
   },

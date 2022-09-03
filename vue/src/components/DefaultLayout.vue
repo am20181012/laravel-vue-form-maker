@@ -35,7 +35,6 @@
                                     ]"
                                     >{{ item.name }}</router-link
                                 >
-                                >
                             </div>
                         </div>
                     </div>
