@@ -23,8 +23,8 @@
                         <div class="mt-1 flex items-center">
                             <!--preko vue modela proveravamo ima li slike i na osnovu toga kazemo sta da prikaze-->
                             <img
-                                v-if="model.image"
-                                :src="model.image"
+                                v-if="model.image_url"
+                                :src="model.image_url"
                                 :alt="model.title"
                                 class="w-64 h-48 object-cover"
                             />
@@ -53,6 +53,7 @@
                                 <!--ovde trigerujemo file picker-->
                                 <input
                                     type="file"
+                                    @change="onImageAdd"
                                     class="absolute left-0 top-0 right-0 bottom-0 opacity-0 cursor-pointer"
                                 />
                                 Change
@@ -211,11 +212,12 @@
 import PageComponent from "../components/PageComponent.vue";
 import { ref } from "vue";
 import store from "../store";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import QuestionEditor from "../components/editor/QuestionEditor.vue";
 import { v4 as uuidv4 } from "uuid";
 
 const route = useRoute();
+const router = useRouter();
 
 //ovde referenciramo prazan model, sto je ok kada se otvori stranica za dodavanje nove forme
 let model = ref({
@@ -234,6 +236,19 @@ if (route.params.id) {
     model.value = store.state.forms.find(
         (f) => f.id === parseInt(route.params.id)
     );
+}
+
+function onImageAdd(event) {
+    //fajl koji saljemo na back
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+        //za back
+        model.value.image = reader.result;
+        //za front
+        model.value.image_url = reader.result;
+    };
+    reader.readAsDataURL(file);
 }
 
 //kada se okin dogadjaj addQuestion, odnosno kad niza komponenta emituje neki dogadjaj...
@@ -261,6 +276,16 @@ function questionChange(question) {
             return JSON.parse(JSON.stringify(question));
         }
         return q;
+    });
+}
+
+//poziv store.js za cuvanje forme i redirekcija
+function saveForm() {
+    store.dispatch("saveForm", model.value).then(({ data }) => {
+        router.push({
+            name: "FormView",
+            params: { id: data.data.id },
+        });
     });
 }
 </script>

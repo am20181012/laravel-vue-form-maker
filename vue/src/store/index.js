@@ -179,6 +179,24 @@ const store = createStore({
         return response;
       });
     },
+
+    //form = model.value iz FormView
+    saveForm({ commit }, form) {
+      delete form.image_url;
+      let response;
+      //ukoliko foma ima id, onda je azuriramo
+      if (form.id) {
+        response = axiosClient.put(`/form/${form.id}`, form).then((res) => {
+          commit("updateForm", res.data);
+          return res;
+        });
+      } else {
+        response = axiosClient.post("/form", form).then((res) => {
+          commit("saveForm", res.data);
+          return res;
+        });
+      }
+    },
   },
   mutations: {
     //resetujemo podatke o korisniku i njegov token
@@ -191,6 +209,19 @@ const store = createStore({
       state.user.token = userData.token;
       state.user.data = userData.user;
       sessionStorage.setItem("TOKEN", userData.token);
+    },
+    //azuriranje state.forms
+    updateForm: (state, form) => {
+      state.forms = state.forms.map((f) => {
+        if (f.id == form.data.id) {
+          return form.data;
+        }
+        return f;
+      });
+    },
+    //cuvanje nove forme, dodavanje forme na kraj niza
+    saveForm: (state, form) => {
+      state.forms = [...state.forms, form.data];
     },
   },
   modules: {},
