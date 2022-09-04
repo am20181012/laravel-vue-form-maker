@@ -25,7 +25,7 @@ class FormController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        return FormResource::collection(Form::where('user_id', $user->id)->paginate());
+        return FormResource::collection(Form::where('user_id', $user->id)->paginate(3));
     }
 
     /**

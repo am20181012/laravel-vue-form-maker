@@ -313,6 +313,11 @@ function questionChange(question) {
 //poziv store.js za cuvanje forme i redirekcija
 function saveForm() {
     store.dispatch("saveForm", model.value).then(({ data }) => {
+        console.log("tu sam");
+        store.commit("notify", {
+            type: "success",
+            message: "Form was successfully updated",
+        });
         router.push({
             name: "FormView",
             params: { id: data.data.id },

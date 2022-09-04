@@ -140,12 +140,18 @@ const store = createStore({
     },
     forms: {
       loading: false,
+      links: [],
       data: [],
     },
     questionTypes: ["text", "select", "radio", "checkbox", "textarea"],
     currentForm: {
       loading: false,
       data: {},
+    },
+    notification: {
+      show: false,
+      type: null,
+      message: null,
     },
   },
   getters: {},
@@ -226,9 +232,10 @@ const store = createStore({
       return axiosClient.delete(`/form/${id}`);
     },
 
-    getForms({ commit }) {
+    getForms({ commit }, { url = null } = {}) {
+      url = url || `/form`;
       commit("setFormsLoading", true);
-      return axiosClient.get(`/form`).then((res) => {
+      return axiosClient.get(url).then((res) => {
         commit("setFormsLoading", false);
         commit("setForms", res.data);
         return res;
@@ -275,7 +282,17 @@ const store = createStore({
     },
 
     setForms: (state, forms) => {
+      state.forms.links = forms.meta.links;
       state.forms.data = forms.data;
+    },
+
+    notify: (state, { message, type }) => {
+      state.notification.show = true;
+      state.notification.type = type;
+      state.notification.message = message;
+      setTimeout(() => {
+        state.notification.show = false;
+      }, 3000);
     },
   },
   modules: {},
