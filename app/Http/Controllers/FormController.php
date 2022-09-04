@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\FormResource;
 use App\Models\FormQuestion;
 use Exception;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -89,6 +90,34 @@ class FormController extends Controller
         }
 
         $form->update($data);
+
+        //pluck - vraca nam kolekciju ID
+        $idFromDb = $form->questions()->pluck('id')->toArray();
+
+        $newId = Arr::pluck($data['questions'], 'id');
+
+        $questionsToDelete = array_diff($idFromDb, $newId);
+
+        $questionsToAdd = array_diff($newId, $idFromDb);
+
+        FormQuestion::destroy($questionsToDelete);
+
+        foreach ($data['questions'] as $q) {
+            if (in_array($q['id'], $questionsToAdd)) {
+                $q['form_id'] = $form->id;
+                $this->createQuestion($q);
+            }
+        }
+
+        //mapa postojecih pitanja, kljuc je id
+        $questionMap = collect($data['questions'])->keyBy('id');
+        foreach ($form->questions as $q) {
+            if (isset($questionMap[$q->id])) {
+                $this->updateQuestion($q, $questionMap[$q->id]);
+            }
+        }
+
+
         return new FormResource($form);
     }
 
@@ -173,5 +202,27 @@ class FormController extends Controller
         ]);
 
         return FormQuestion::create($validator->validated());
+    }
+
+    private function updateQuestion(FormQuestion $question, $data)
+    {
+        if (is_array($data['data'])) {
+            $data['data'] = json_encode($data['data']);
+        }
+        $validator = Validator::make($data, [
+            'id' => 'exists:App\Models\FormQuestion,id',
+            'question' => 'required|string',
+            'type' => ['required', Rule::in([
+                Form::TYPE_TEXT,
+                Form::TYPE_TEXTAREA,
+                Form::TYPE_SELECT,
+                Form::TYPE_RADIO,
+                Form::TYPE_CHECKBOX,
+            ])],
+            'description' => 'nullable|string',
+            'data' => 'present',
+        ]);
+
+        return $question->update($validator->validated());
     }
 }
