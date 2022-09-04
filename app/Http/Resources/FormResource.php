@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\URL;
 
 class FormResource extends JsonResource
 {
@@ -18,6 +19,7 @@ class FormResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
+            'image_url' => $this->image ? URL::to($this->image) : null,
             'status' => $this->status !== 'draft',
             'description' => $this->description,
             'created_at' => $this->created_at,

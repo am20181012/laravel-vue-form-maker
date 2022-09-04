@@ -5,13 +5,35 @@
             <div class="flex items-center justify-between">
                 <!--samo ispituje ima li model id, ako ne onda znaci da cemo dodavati novu formu pa je naslov drugaciji-->
                 <h1 class="text-3xl font-bold text-gray-900">
-                    {{ model.id ? model.title : "Create a Form" }}
+                    {{ route.params.id ? model.title : "Create a Form" }}
                 </h1>
+
+                <button
+                    v-if="route.params.id"
+                    type="button"
+                    @click="deleteForm()"
+                    class="py-2 px-3 text-white bg-red-500 rounded-md hover:bg-red-600"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 -mt-1 inline-block"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                    >
+                        <path
+                            fill-rule="evenodd"
+                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                            clip-rule="evenodd"
+                        />
+                    </svg>
+                    Delete Form
+                </button>
             </div>
         </template>
         <!--kraj hedera-->
 
-        <form @submit.prevent="saveForm">
+        <div v-if="formLoading" class="flex justify-center">Loading...</div>
+        <form v-else @submit.prevent="saveForm">
             <div class="shadow sm:rounded-md sm:overflow-hidden">
                 <!--polja forme-->
                 <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
@@ -210,7 +232,7 @@
 
 <script setup>
 import PageComponent from "../components/PageComponent.vue";
-import { ref } from "vue";
+import { ref, watch, computed } from "vue";
 import store from "../store";
 import { useRoute, useRouter } from "vue-router";
 import QuestionEditor from "../components/editor/QuestionEditor.vue";
@@ -218,6 +240,8 @@ import { v4 as uuidv4 } from "uuid";
 
 const route = useRoute();
 const router = useRouter();
+
+const formLoading = computed(() => store.state.currentForm.loading);
 
 //ovde referenciramo prazan model, sto je ok kada se otvori stranica za dodavanje nove forme
 let model = ref({
@@ -229,13 +253,20 @@ let model = ref({
     questions: [],
 });
 
+watch(
+    () => store.state.currentForm.data,
+    (newVal, oldVal) => {
+        model.value = {
+            ...JSON.parse(JSON.stringify(newVal)),
+            status: newVal.status !== "draft",
+        };
+    }
+);
 //ovde pravimo model ukoliko je pozvana stranica za izmenu podataka forme
 //pristupa se pozvanoj ruti i ukoliko sadrzi parametar id onda se modelu dodeljuju vrednosti one
 //forme iz store.js za koja ima isti id kao sto je prosledjen id parametar u ruti
 if (route.params.id) {
-    model.value = store.state.forms.find(
-        (f) => f.id === parseInt(route.params.id)
-    );
+    store.dispatch("getForm", route.params.id);
 }
 
 function onImageAdd(event) {
@@ -251,7 +282,7 @@ function onImageAdd(event) {
     reader.readAsDataURL(file);
 }
 
-//kada se okin dogadjaj addQuestion, odnosno kad niza komponenta emituje neki dogadjaj...
+//kada se okine dogadjaj addQuestion, odnosno kad niza komponenta emituje neki dogadjaj...
 //pravi novo pitanje, dodeljuje nov id, a ostala polja postavlja na default
 function addQuestion(index) {
     const newQuestion = {
@@ -287,5 +318,15 @@ function saveForm() {
             params: { id: data.data.id },
         });
     });
+}
+
+function deleteForm() {
+    if (confirm(`Are you sure?`)) {
+        store.dispatch("deleteForm", model.value.id).then(() => {
+            router.push({
+                name: "Forms",
+            });
+        });
+    }
 }
 </script>

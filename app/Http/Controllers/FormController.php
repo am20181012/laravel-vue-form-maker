@@ -96,6 +96,12 @@ class FormController extends Controller
             return abort(403, 'Unauthorized action.');
         }
         $form->delete();
+
+        if ($form->image) {
+            $absolutePath = public_path($form->image);
+            File::delete($absolutePath);
+        }
+
         return response('', 204);
     }
 

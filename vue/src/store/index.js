@@ -138,6 +138,10 @@ const store = createStore({
     },
     forms: [...tempForms],
     questionTypes: ["text", "select", "radio", "checkbox", "textarea"],
+    currentForm: {
+      loading: false,
+      data: {},
+    },
   },
   getters: {},
   actions: {
@@ -187,15 +191,34 @@ const store = createStore({
       //ukoliko foma ima id, onda je azuriramo
       if (form.id) {
         response = axiosClient.put(`/form/${form.id}`, form).then((res) => {
-          commit("updateForm", res.data);
+          commit("setCurrentForm", res.data);
           return res;
         });
       } else {
         response = axiosClient.post("/form", form).then((res) => {
-          commit("saveForm", res.data);
+          commit("setCurrentForm", res.data);
           return res;
         });
       }
+    },
+
+    getForm({ commit }, id) {
+      commit("setCurrentFormLoading", true);
+      return axiosClient
+        .get(`/form/${id}`)
+        .then((res) => {
+          commit("setCurrentForm", res.data);
+          commit("setCurrentFormLoading", false);
+          return res;
+        })
+        .catch((err) => {
+          commit("setCurrentFormLoading", true);
+          throw err;
+        });
+    },
+
+    deleteForm({}, id) {
+      return axiosClient.delete(`/form/${id}`);
     },
   },
   mutations: {
@@ -210,6 +233,7 @@ const store = createStore({
       state.user.data = userData.user;
       sessionStorage.setItem("TOKEN", userData.token);
     },
+    /*
     //azuriranje state.forms
     updateForm: (state, form) => {
       state.forms = state.forms.map((f) => {
@@ -222,6 +246,14 @@ const store = createStore({
     //cuvanje nove forme, dodavanje forme na kraj niza
     saveForm: (state, form) => {
       state.forms = [...state.forms, form.data];
+    },
+    */
+    setCurrentFormLoading: (state, loading) => {
+      state.currentForm.loading = loading;
+    },
+
+    setCurrentForm: (state, form) => {
+      state.currentForm.data = form.data;
     },
   },
   modules: {},
