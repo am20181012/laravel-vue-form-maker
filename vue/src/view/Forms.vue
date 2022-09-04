@@ -39,7 +39,7 @@
             >
                 <!--Image-->
                 <img
-                    :src="form.image"
+                    :src="form.image_url"
                     alt=""
                     class="w-full h-48 object-cover"
                 />
@@ -105,7 +105,9 @@ import store from "../store";
 import { computed } from "vue";
 
 //kupimo sve forme iz stora-a
-const forms = computed(() => store.state.forms);
+const forms = computed(() => store.state.forms.data);
+
+store.dispatch("getForms");
 
 function deleteForm(form) {
     if (confirm("Are you sure you want to delete this form?")) {

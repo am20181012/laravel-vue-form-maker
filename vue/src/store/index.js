@@ -1,6 +1,7 @@
 import { createStore } from "vuex";
 import axiosClient from "../axios";
 
+/*
 const tempForms = [
   {
     id: 1,
@@ -128,6 +129,7 @@ const tempForms = [
     questions: [],
   },
 ];
+*/
 
 const store = createStore({
   state: {
@@ -136,7 +138,10 @@ const store = createStore({
       token: sessionStorage.getItem("TOKEN"),
       //token: 123,
     },
-    forms: [...tempForms],
+    forms: {
+      loading: false,
+      data: [],
+    },
     questionTypes: ["text", "select", "radio", "checkbox", "textarea"],
     currentForm: {
       loading: false,
@@ -220,6 +225,15 @@ const store = createStore({
     deleteForm({}, id) {
       return axiosClient.delete(`/form/${id}`);
     },
+
+    getForms({ commit }) {
+      commit("setFormsLoading", true);
+      return axiosClient.get(`/form`).then((res) => {
+        commit("setFormsLoading", false);
+        commit("setForms", res.data);
+        return res;
+      });
+    },
   },
   mutations: {
     //resetujemo podatke o korisniku i njegov token
@@ -254,6 +268,14 @@ const store = createStore({
 
     setCurrentForm: (state, form) => {
       state.currentForm.data = form.data;
+    },
+
+    setFormsLoading: (state, loading) => {
+      state.forms.loading = loading;
+    },
+
+    setForms: (state, forms) => {
+      state.forms.data = forms.data;
     },
   },
   modules: {},
