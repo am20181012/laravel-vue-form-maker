@@ -12,6 +12,12 @@ class Form extends Model
 {
     use HasFactory, HasSlug;
 
+    const TYPE_TEXT = 'text';
+    const TYPE_TEXTAREA = 'textarea';
+    const TYPE_SELECT = 'select';
+    const TYPE_RADIO = 'radio';
+    const TYPE_CHECKBOX = 'checkbox';
+
     protected $fillable = [
         'user_id',
         'title',

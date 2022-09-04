@@ -7,9 +7,12 @@ use App\Http\Requests\StoreFormRequest;
 use App\Http\Requests\UpdateFormRequest;
 use Illuminate\Http\Request;
 use App\Http\Resources\FormResource;
+use App\Models\FormQuestion;
 use Exception;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class FormController extends Controller
 {
@@ -39,6 +42,12 @@ class FormController extends Controller
             $data['image'] = $relativePath;
         }
         $form = Form::create($data);
+
+        foreach ($data['questions'] as $q) {
+            $q['form_id'] = $form->id;
+            $this->createQuestion($q);
+        }
+
         return new FormResource($form);
     }
 
@@ -142,5 +151,27 @@ class FormController extends Controller
         file_put_contents($relativePath, $image);
 
         return $relativePath;
+    }
+
+    private function createQuestion($question)
+    {
+        if (is_array($question['data'])) {
+            $question['data'] = json_encode($question['data']);
+        }
+        $validator = Validator::make($question, [
+            'question' => 'required|string',
+            'type' => ['required', Rule::in([
+                Form::TYPE_TEXT,
+                Form::TYPE_TEXTAREA,
+                Form::TYPE_SELECT,
+                Form::TYPE_RADIO,
+                Form::TYPE_CHECKBOX,
+            ])],
+            'description' => 'nullable|string',
+            'data' => 'present',
+            'form_id' => 'exists:App\Models\Form,id'
+        ]);
+
+        return FormQuestion::create($validator->validated());
     }
 }
