@@ -25,5 +25,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('/form', FormController::class);
 });
 
+Route::get('form-by-slug/{form:slug}', [FormController::class, 'showForOther']);
+Route::post('form/{form}/answer', [FormController::class, 'storeAnswers']);
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);

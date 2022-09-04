@@ -37,4 +37,9 @@ class Form extends Model
     {
         return $this->hasMany(FormQuestion::class);
     }
+
+    public function answers()
+    {
+        return $this->hasMany(FormAnswer::class);
+    }
 }

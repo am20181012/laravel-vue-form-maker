@@ -241,6 +241,24 @@ const store = createStore({
         return res;
       });
     },
+
+    getFormBySlug({ commit }, slug) {
+      commit("setCurrentFormLoading", true);
+      return axiosClient
+        .get(`/form-by-slug/${slug}`)
+        .then((res) => {
+          commit("setCurrentForm", res.data);
+          commit("setCurrentFormLoading", false);
+        })
+        .catch((err) => {
+          commit("setCurrentFormLoading", false);
+          throw err;
+        });
+    },
+
+    saveFormAnswers({ commit }, { formId, answers }) {
+      return axiosClient.post(`/form/${formId}/answer`, { answers });
+    },
   },
   mutations: {
     //resetujemo podatke o korisniku i njegov token

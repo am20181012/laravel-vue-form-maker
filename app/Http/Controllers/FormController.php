@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Form;
 use App\Http\Requests\StoreFormRequest;
+use App\Http\Requests\StorFormAnswerRequest;
 use App\Http\Requests\UpdateFormRequest;
 use Illuminate\Http\Request;
 use App\Http\Resources\FormResource;
+use App\Models\FormAnswer;
 use App\Models\FormQuestion;
+use App\Models\FormQuestionAnswer;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
@@ -52,6 +55,35 @@ class FormController extends Controller
         return new FormResource($form);
     }
 
+    public function storeAnswers(Form $form, StorFormAnswerRequest $request)
+    {
+        $validated = $request->validated();
+
+        $formAnswer = FormAnswer::create([
+            'form_id' => $form->id,
+            'start_date' => date('Y-m-d H:i:s'),
+            'end_date' => date('Y-m-d H:i:s'),
+        ]);
+
+        foreach ($validated['answers'] as $questionId => $answer) {
+            //proveravam da li id pitanja pripada istoj formi na koju korisnik odgovara
+            $question = FormQuestion::where(['id' => $questionId, 'form_id' => $form->id])->get();
+            if (!$question) {
+                return response("Invalid question ID: \"$questionId\"", 400);
+            }
+
+            $data = [
+                'form_question_id' => $questionId,
+                'form_answer_id' => $formAnswer->id,
+                'answer' => is_array($answer) ? json_encode($answer) : $answer
+            ];
+
+            $questionAnswer = FormQuestionAnswer::create($data);
+        }
+
+        return response("", 201);
+    }
+
     /**
      * Display the specified resource.
      *
@@ -64,6 +96,11 @@ class FormController extends Controller
         if ($user->id !== $form->user_id) {
             return abort(403, 'Unauthorized action.');
         }
+        return new FormResource($form);
+    }
+
+    public function showForOther(Form $form)
+    {
         return new FormResource($form);
     }
 

@@ -1,0 +1,94 @@
+<template>
+    <div class="py-5 px-8">
+        <div v-if="loading" class="flex justify-center">Loading...</div>
+        <form @submit.prevent="submitForm" v-else class="container mx-auto">
+            <div class="grid grid-cols-6 items-center">
+                <div class="mr-4">
+                    <img :src="form.image_url" alt="" />
+                </div>
+                <div class="col-span-5">
+                    <h1 class="text-3xl mb-3">{{ form.title }}</h1>
+                    <p
+                        class="text-gray-500 text-sm"
+                        v-html="form.description"
+                    ></p>
+                </div>
+            </div>
+
+            <div
+                v-if="formFinish"
+                class="py-8 px-6 bg-emerald-400 text-white w-[600px] mx-auto"
+            >
+                <div class="text-xl mb-3 font-semibold">
+                    Thank you for participating in this form.
+                </div>
+                <button
+                    @click="submitAnotherResponse"
+                    type="button"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                    Submit another response
+                </button>
+            </div>
+
+            <div v-else>
+                <hr class="my-3" />
+                <div
+                    v-for="(question, ind) of form.questions"
+                    :key="question.id"
+                >
+                    <QuestionViewer
+                        v-model="answers[question.id]"
+                        :question="question"
+                        :index="ind"
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                    Submit
+                </button>
+            </div>
+        </form>
+    </div>
+</template>
+
+<script setup>
+import QuestionViewer from "../components/QuestionViewer.vue";
+import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
+import { useStore } from "vuex";
+
+const route = useRoute();
+const store = useStore();
+
+const loading = computed(() => store.state.currentForm.loading);
+const form = computed(() => store.state.currentForm.data);
+
+const formFinish = ref(false);
+
+const answers = ref({});
+
+store.dispatch("getFormBySlug", route.params.slug);
+
+function submitForm() {
+    //console.log(JSON.stringify(answers.value, undefined, 2));
+    store
+        .dispatch("saveFormAnswers", {
+            formId: form.value.id,
+            answers: answers.value,
+        })
+        .then((res) => {
+            if (res.status === 201) {
+                formFinish.value = true;
+            }
+        });
+}
+
+function submitAnotherResponse() {
+    answers.value = {};
+    formFinish.value = false;
+}
+</script>

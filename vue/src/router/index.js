@@ -7,6 +7,7 @@ import Forms from "../view/Forms.vue";
 import store from "../store";
 import AuthLayout from "../components/AuthLayout.vue";
 import FormView from "../view/FormView.vue";
+import PublicForm from "../view/PublicForm.vue";
 
 const routes = [
   {
@@ -41,6 +42,11 @@ const routes = [
         component: FormView,
       },
     ],
+  },
+  {
+    path: "/view/form/:slug",
+    name: "Public Form",
+    component: PublicForm,
   },
   {
     path: "/auth",
