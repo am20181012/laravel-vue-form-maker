@@ -3,7 +3,14 @@
         <!--heder strane na kojoj se prikazuju forme-->
         <template v-slot:header>
             <div class="flex justify-between items-center">
-                <h1 class="text-3xl font-bold text-gray-900">Forms</h1>
+                <h1 class="text-3xl font-bold text-gray-900">Testovi</h1>
+
+                <input
+                    type="text"
+                    v-model="searchOption"
+                    placeholder="pretraga..."
+                    class="py-2 px-3 rounded-3xl"
+                />
                 <!--ovde je dugme za dodavanje nove forme obavijeno router-linkom kako bi nas navigiralo na odgovarajucu stranu-->
                 <router-link
                     :to="{ name: 'FormCreate' }"
@@ -23,13 +30,15 @@
                             d="M12 4v16m8-8H4"
                         />
                     </svg>
-                    Add new Form
+                    Kreiraj test
                 </router-link>
             </div>
         </template>
-        <!--kraj hedera-->
+        <!--kraj hedera <pre>{{ forms }}</pre>-->
 
-        <div v-if="forms.loading" class="flex justify-center">Loading...</div>
+        <div v-if="forms.loading" class="flex justify-center">
+            Ucitava se...
+        </div>
         <!--omotac za sve kartice sa formama-->
         <div v-else>
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
@@ -75,13 +84,29 @@
 <script setup>
 import PageComponent from "../components/PageComponent.vue";
 import store from "../store";
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import FormListItem from "../components/FormListItem.vue";
 
 //kupimo sve forme iz stora-a
 const forms = computed(() => store.state.forms);
 
+let searchOption = ref(null);
+
+watch(
+    () => store.state.forms,
+    (newVal, oldVal) => {
+        console.log("I TUUUUU");
+        forms = newVal;
+    }
+);
+
+watch(searchOption, () => {
+    console.log(searchOption.value);
+    store.dispatch("getForms", searchOption.value);
+});
+
 store.dispatch("getForms");
+console.log("OVDEEEEEEEEEEEEEE");
 
 function deleteForm(form) {
     if (confirm("Are you sure you want to delete this form?")) {

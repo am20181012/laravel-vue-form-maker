@@ -8,15 +8,15 @@
         <h2
             class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900"
         >
-            Register for free
+            Registruj se besplatno
         </h2>
         <p class="mt-2 text-center text-sm text-gray-600">
-            Or
+            Ili
             {{ " " }}
             <router-link
                 :to="{ name: 'Login' }"
                 class="font-medium text-indigo-600 hover:text-indigo-500"
-                >login to your account</router-link
+                >se prijavi na postojeci nalog</router-link
             >
         </p>
     </div>
@@ -24,7 +24,7 @@
         <input type="hidden" name="remember" value="true" />
         <div class="-space-y-px rounded-md shadow-sm">
             <div>
-                <label for="full-name" class="sr-only">Email address</label>
+                <label for="full-name" class="sr-only">Full name</label>
                 <input
                     id="full-name"
                     name="name"
@@ -33,7 +33,7 @@
                     required=""
                     v-model="user.name"
                     class="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Full name"
+                    placeholder="Ime i prezime"
                 />
             </div>
             <div>
@@ -46,7 +46,7 @@
                     required=""
                     v-model="user.email"
                     class="relative block w-full appearance-none rounded-none border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Email address"
+                    placeholder="Email adresa"
                 />
             </div>
             <div>
@@ -59,7 +59,7 @@
                     required=""
                     v-model="user.password"
                     class="relative block w-full appearance-none rounded-none border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Password"
+                    placeholder="Lozinka"
                 />
             </div>
             <div>
@@ -74,7 +74,7 @@
                     required=""
                     v-model="user.password_confirmation"
                     class="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Password Confirmation"
+                    placeholder="Potvrda lozinke"
                 />
             </div>
         </div>
@@ -90,7 +90,7 @@
                         aria-hidden="true"
                     />
                 </span>
-                Sign up
+                Registruj se
             </button>
         </div>
     </form>

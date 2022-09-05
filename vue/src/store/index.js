@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import axiosClient from "../axios";
+import axios from "axios";
 
 /*
 const tempForms = [
@@ -153,6 +154,14 @@ const store = createStore({
       type: null,
       message: null,
     },
+    dashboard: {
+      loading: false,
+      data: {},
+    },
+    randomPhoto: {
+      url: null,
+      search: null,
+    },
   },
   getters: {},
   actions: {
@@ -161,22 +170,6 @@ const store = createStore({
         commit("setUser", data);
         return data;
       });
-
-      /*
-      return fetch(`http://localhost:8000/api/register`, {
-        headers: {
-          "Content-type": "application/json",
-          Accept: "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify(user),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          commit("setUser", res);
-          return res;
-        });
-        */
     },
 
     login({ commit }, user) {
@@ -201,10 +194,16 @@ const store = createStore({
       let response;
       //ukoliko foma ima id, onda je azuriramo
       if (form.id) {
-        response = axiosClient.put(`/form/${form.id}`, form).then((res) => {
-          commit("setCurrentForm", res.data);
-          return res;
-        });
+        response = axiosClient
+          .put(`/form/${form.id}`, form)
+          .then((res) => {
+            commit("setCurrentForm", res.data);
+            return res;
+          })
+          .catch((err) => {
+            console.log(err);
+            throw err;
+          });
       } else {
         response = axiosClient.post("/form", form).then((res) => {
           commit("setCurrentForm", res.data);
@@ -232,14 +231,20 @@ const store = createStore({
       return axiosClient.delete(`/form/${id}`);
     },
 
-    getForms({ commit }, { url = null } = {}) {
+    getForms({ commit }, payload, { url = null } = {}) {
+      console.log("SEARCH in STORE");
+      console.log(payload);
       url = url || `/form`;
       commit("setFormsLoading", true);
-      return axiosClient.get(url).then((res) => {
-        commit("setFormsLoading", false);
-        commit("setForms", res.data);
-        return res;
-      });
+      return axiosClient
+        .get(url, { params: { search: payload } })
+        .then((res) => {
+          console.log(axiosClient.get(url, payload));
+          commit("setFormsLoading", false);
+          commit("setForms", res.data);
+          console.log(res.data);
+          return res;
+        });
     },
 
     getFormBySlug({ commit }, slug) {
@@ -258,6 +263,52 @@ const store = createStore({
 
     saveFormAnswers({ commit }, { formId, answers }) {
       return axiosClient.post(`/form/${formId}/answer`, { answers });
+    },
+
+    getDashboardData({ commit }) {
+      commit("dashboardLoading", true);
+      return axiosClient
+        .get(`/dashboard`)
+        .then((res) => {
+          commit("dashboardLoading", false);
+          commit("setDashboardData", res.data);
+          return res;
+        })
+        .catch((err) => {
+          commit("dashboardLoading", false);
+          return err;
+        });
+    },
+    getPhotoFromDomain({ commit }, search_word) {
+      commit("setRandomPhotoSearch", search_word);
+      const options = {
+        method: "GET",
+        url: "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI",
+        params: {
+          q: `${search_word}`,
+          pageNumber: "1",
+          pageSize: "1",
+          autoCorrect: "true",
+        },
+        headers: {
+          "X-RapidAPI-Key":
+            "c90973ff83msh0d133285d4c3801p1341c1jsn1abc474c4fda",
+          "X-RapidAPI-Host": "contextualwebsearch-websearch-v1.p.rapidapi.com",
+        },
+      };
+
+      return axios
+        .request(options)
+        .then((response) => {
+          console.log("STORE");
+          console.log(response.data.value[0]);
+          commit("setRandomPhotoURL", response.data.value[0].url);
+          return response;
+          //return response.data.value[0].url;
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
     },
   },
   mutations: {
@@ -311,6 +362,22 @@ const store = createStore({
       setTimeout(() => {
         state.notification.show = false;
       }, 3000);
+    },
+
+    dashboardLoading: (state, loading) => {
+      state.dashboard.loading = loading;
+    },
+
+    setDashboardData: (state, dashData) => {
+      state.dashboard.data = dashData;
+    },
+
+    setRandomPhotoSearch: (state, search_word) => {
+      state.randomPhoto.search = search_word;
+    },
+
+    setRandomPhotoURL: (state, url) => {
+      state.randomPhoto.url = url;
     },
   },
   modules: {},

@@ -80,6 +80,27 @@
                                 />
                                 Change
                             </button>
+
+                            <!-- Photo from Domain-->
+                            <div class="mt-1 flex items-center">
+                                <input
+                                    placeholder="key word..."
+                                    v-model="search_word"
+                                    class="relative overflow-hidden ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                />
+
+                                <button
+                                    type="button"
+                                    class="relative overflow-hidden ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                >
+                                    <input
+                                        @click="onPhotoAdd"
+                                        class="absolute left-0 top-0 right-0 bottom-0 opacity-0 cursor-pointer"
+                                    />
+                                    Generate
+                                </button>
+                            </div>
+                            <!-- Photo from domain kraj -->
                         </div>
                     </div>
                     <!--/ Image -->
@@ -253,12 +274,15 @@ let model = ref({
     questions: [],
 });
 
+let search_word = ref(null);
+
 watch(
     () => store.state.currentForm.data,
     (newVal, oldVal) => {
         model.value = {
             ...JSON.parse(JSON.stringify(newVal)),
             status: newVal.status !== "draft",
+            //expire_date: ,
         };
     }
 );
@@ -270,8 +294,11 @@ if (route.params.id) {
 }
 
 function onImageAdd(event) {
+    console.log("tu tu tu");
+
     //fajl koji saljemo na back
     const file = event.target.files[0];
+    console.log(file);
     const reader = new FileReader();
     reader.onload = () => {
         //za back
@@ -280,6 +307,13 @@ function onImageAdd(event) {
         model.value.image_url = reader.result;
     };
     reader.readAsDataURL(file);
+}
+
+function onPhotoAdd() {
+    store.dispatch("getPhotoFromDomain", search_word.value).then((res) => {
+        console.log(res.data.value[0]);
+        model.value.image_url = res.data.value[0].url;
+    });
 }
 
 //kada se okine dogadjaj addQuestion, odnosno kad niza komponenta emituje neki dogadjaj...
@@ -312,17 +346,25 @@ function questionChange(question) {
 
 //poziv store.js za cuvanje forme i redirekcija
 function saveForm() {
-    store.dispatch("saveForm", model.value).then(({ data }) => {
-        console.log("tu sam");
-        store.commit("notify", {
-            type: "success",
-            message: "Form was successfully updated",
+    store
+        .dispatch("saveForm", model.value)
+        .then((res) => {
+            store.commit("notify", {
+                type: "success",
+                message: "Form was successfully updated",
+            });
+            /*
+            router.push({
+                name: "FormView",
+                params: { id: data.data.id },
+            });*/
+        })
+        .catch((err) => {
+            store.commit("notify", {
+                type: "faild",
+                message: "Error",
+            });
         });
-        router.push({
-            name: "FormView",
-            params: { id: data.data.id },
-        });
-    });
 }
 
 function deleteForm() {

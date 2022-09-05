@@ -49,11 +49,27 @@
                                         <span class="sr-only"
                                             >Open user menu</span
                                         >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="white"
+                                            class="h-8 w-8"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"
+                                            />
+                                        </svg>
+
+                                        <!--
                                         <img
                                             class="h-8 w-8 rounded-full"
                                             :src="user.imageUrl"
                                             alt=""
-                                        />
+                                        />-->
                                     </MenuButton>
                                 </div>
                                 <transition
@@ -73,7 +89,7 @@
                                                 :class="[
                                                     'block px-4 py-2 text-sm text-gray-700 cursor-pointer',
                                                 ]"
-                                                >Sing out</a
+                                                >Odjavi se</a
                                             >
                                         </MenuItem>
                                     </MenuItems>
@@ -120,13 +136,6 @@
                 </div>
                 <div class="border-t border-gray-700 pt-4 pb-3">
                     <div class="flex items-center px-5">
-                        <div class="flex-shrink-0">
-                            <img
-                                class="h-10 w-10 rounded-full"
-                                :src="user.imageUrl"
-                                alt=""
-                            />
-                        </div>
                         <div class="ml-3">
                             <div
                                 class="text-base font-medium leading-none text-white"
@@ -145,7 +154,7 @@
                             as="a"
                             @click="logout"
                             class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 cursor-pointer hover:text-white"
-                            >Sign out</DisclosureButton
+                            >Odjavi se</DisclosureButton
                         >
                     </div>
                 </div>
@@ -175,8 +184,8 @@ import { useRouter } from "vue-router";
 import Notification from "./Notification.vue";
 
 const navigation = [
-    { name: "Dashboard", to: { name: "Dashboard" } },
-    { name: "forms", to: { name: "Forms" } },
+    { name: "Pocetna", to: { name: "Dashboard" } },
+    { name: "testovi", to: { name: "Forms" } },
 ];
 
 export default {

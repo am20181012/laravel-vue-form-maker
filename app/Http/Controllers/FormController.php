@@ -28,7 +28,15 @@ class FormController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        return FormResource::collection(Form::where('user_id', $user->id)->paginate(3));
+
+        $query = Form::where('user_id', $user->id);
+
+        //echo "pre";
+
+        if ($request['search']) {
+            $query = Form::where('user_id', $user->id)->where('title', 'like', '%' . $request['search'] . '%');
+        }
+        return FormResource::collection($query->paginate(6));
     }
 
     /**

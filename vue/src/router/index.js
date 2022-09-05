@@ -13,7 +13,7 @@ const routes = [
   {
     path: "/",
     redirect: "/dashboard",
-    name: "Dashboard",
+    name: "Pocetna",
     component: DefaultLayout,
 
     //pokazuje router-u da ova putanja (/ ili /dashboard) zahteva autentifikaciju

@@ -8,15 +8,15 @@
         <h2
             class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900"
         >
-            Sign in to your account
+            Prijavite se na Vas nalog
         </h2>
         <p class="mt-2 text-center text-sm text-gray-600">
-            Or
+            Ili
             {{ " " }}
             <router-link
                 :to="{ name: 'Register' }"
                 class="font-medium text-indigo-600 hover:text-indigo-500"
-                >Register for free</router-link
+                >se besplatno registrujte</router-link
             >
         </p>
     </div>
@@ -58,7 +58,7 @@
                     required=""
                     v-model="user.email"
                     class="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Email address"
+                    placeholder="Email adresa"
                 />
             </div>
             <div>
@@ -71,7 +71,7 @@
                     required=""
                     v-model="user.password"
                     class="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Password"
+                    placeholder="Lozinka"
                 />
             </div>
         </div>
@@ -88,7 +88,7 @@
                 <label
                     for="remember-me"
                     class="ml-2 block text-sm text-gray-900"
-                    >Remember me</label
+                    >Zapamti me</label
                 >
             </div>
         </div>
@@ -104,7 +104,7 @@
                         aria-hidden="true"
                     />
                 </span>
-                Sign in
+                Prijavi se
             </button>
         </div>
     </form>

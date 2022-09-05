@@ -11,7 +11,7 @@ const axiosClient = axios.create({
 //svaki request koji axios napravi mora proci autorizaciju tokena
 axiosClient.interceptors.request.use((config) => {
   config.headers.Authorization = `Bearer ${store.state.user.token}`;
-  console.log("NNNNNN:" + config.headers.Authorization);
+  //console.log("NNNNNN:" + config.headers.Authorization);
   return config;
 });
 

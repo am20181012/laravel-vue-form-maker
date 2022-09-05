@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FormController;
+use App\Http\Controllers\MainController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::resource('/form', FormController::class);
+
+    Route::get('/dashboard', [MainController::class, 'index']);
 });
 
 Route::get('form-by-slug/{form:slug}', [FormController::class, 'showForOther']);
