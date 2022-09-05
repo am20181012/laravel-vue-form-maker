@@ -21,10 +21,7 @@
         </p>
     </div>
     <form class="mt-8 space-y-6" @submit="login">
-        <div
-            v-if="errorMsg"
-            class="flex items-center justify-between py-3 px-5 bg-red-500 text-white rounded"
-        >
+        <Alert v-if="errorMsg">
             {{ errorMsg }}
             <span
                 @click="errorMsg = ''"
@@ -32,20 +29,20 @@
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke-width="1.5"
                     stroke="currentColor"
-                    class="w-6 h-6"
                 >
                     <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
+                        stroke-width="2"
                         d="M6 18L18 6M6 6l12 12"
                     />
                 </svg>
             </span>
-        </div>
+        </Alert>
         <input type="hidden" name="remember" value="true" />
         <div class="-space-y-px rounded-md shadow-sm">
             <div>
@@ -115,6 +112,7 @@ import { LockClosedIcon } from "@heroicons/vue/20/solid";
 import store from "../store";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
+import Alert from "../components/Alert.vue";
 
 const user = {
     email: "",
@@ -136,7 +134,7 @@ function login(event) {
             });
         })
         .catch((err) => {
-            errorMsg.value = err.response.data.error;
+            errorMsg.value = "Neispravan email ili lozinka!";
         });
 }
 </script>
