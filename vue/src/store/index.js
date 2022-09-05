@@ -64,7 +64,7 @@ const store = createStore({
       let response;
       //ukoliko foma ima id, onda je azuriramo
       if (form.id) {
-        response = axiosClient
+        return axiosClient
           .put(`/form/${form.id}`, form)
           .then((res) => {
             commit("setCurrentForm", res.data);
@@ -75,7 +75,7 @@ const store = createStore({
             throw err;
           });
       } else {
-        response = axiosClient.post("/form", form).then((res) => {
+        return axiosClient.post("/form", form).then((res) => {
           commit("setCurrentForm", res.data);
           return res;
         });
@@ -101,15 +101,24 @@ const store = createStore({
       return axiosClient.delete(`/form/${id}`);
     },
 
-    getForms({ commit }, payload, { url = null } = {}) {
-      console.log("SEARCH in STORE");
-      console.log(payload);
+    getForms({ commit }, { url = null } = {}) {
       url = url || `/form`;
       commit("setFormsLoading", true);
+      return axiosClient.get(url).then((res) => {
+        commit("setFormsLoading", false);
+        commit("setForms", res.data);
+        console.log(res.data);
+        return res;
+      });
+    },
+
+    getFormsParams({ commit }, param) {
+      console.log("SEARCH in STORE");
+      console.log(param);
+      commit("setFormsLoading", true);
       return axiosClient
-        .get(url, { params: { search: payload } })
+        .get(`/form`, { params: { search: param } })
         .then((res) => {
-          console.log(axiosClient.get(url, payload));
           commit("setFormsLoading", false);
           commit("setForms", res.data);
           console.log(res.data);

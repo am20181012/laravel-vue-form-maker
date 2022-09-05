@@ -102,7 +102,7 @@ watch(
 
 watch(searchOption, () => {
     console.log(searchOption.value);
-    store.dispatch("getForms", searchOption.value);
+    store.dispatch("getFormsParams", searchOption.value);
 });
 
 store.dispatch("getForms");

@@ -29,14 +29,14 @@ class FormController extends Controller
     {
         $user = $request->user();
 
-        $query = Form::where('user_id', $user->id);
+        $query = Form::where('user_id', $user->id)->paginate(6);
 
         //echo "pre";
 
         if ($request['search']) {
-            $query = Form::where('user_id', $user->id)->where('title', 'like', '%' . $request['search'] . '%');
+            $query = Form::where('user_id', $user->id)->where('title', 'like', '%' . $request['search'] . '%')->paginate(6);
         }
-        return FormResource::collection($query->paginate(6));
+        return FormResource::collection($query);
     }
 
     /**

@@ -351,18 +351,13 @@ function saveForm() {
         .then((res) => {
             store.commit("notify", {
                 type: "success",
-                message: "Form was successfully updated",
+                message: "Test je uspesno sacuvan!",
             });
-            /*
-            router.push({
-                name: "FormView",
-                params: { id: data.data.id },
-            });*/
         })
         .catch((err) => {
             store.commit("notify", {
                 type: "faild",
-                message: "Error",
+                message: "Greska! Proverite polja forme!",
             });
         });
 }
