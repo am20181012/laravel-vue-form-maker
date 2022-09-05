@@ -206,6 +206,17 @@ class FormController extends Controller
             if ($image === false) {
                 throw new Exception('base64_decode error');
             }
+        } else if (str_starts_with($image, 'https://www.')) {
+            if (str_ends_with($image, '.jpg')) {
+                $type = 'jpg';
+            } else if (str_ends_with($image, '.jpeg')) {
+                $type = 'jpeg';
+            } else if (str_ends_with($image, '.gif')) {
+                $type = 'gif';
+            } else if (str_ends_with($image, '.png')) {
+                $type = 'png';
+            } else {
+            }
         } else {
             throw new Exception('image error');
         }

@@ -20,14 +20,14 @@
                 class="py-8 px-6 bg-emerald-400 text-white w-[600px] mx-auto"
             >
                 <div class="text-xl mb-3 font-semibold">
-                    Thank you for participating in this form.
+                    Hvala na izdvojenom vremenu! :)
                 </div>
                 <button
                     @click="submitAnotherResponse"
                     type="button"
                     class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                    Submit another response
+                    Popunite jos jedan test
                 </button>
             </div>
 
@@ -48,7 +48,7 @@
                     type="submit"
                     class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                    Submit
+                    Potvrdi
                 </button>
             </div>
         </form>

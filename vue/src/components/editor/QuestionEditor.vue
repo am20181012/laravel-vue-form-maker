@@ -23,7 +23,7 @@
                         clip-rule="evenodd"
                     />
                 </svg>
-                Add
+                Dodaj
             </button>
             <!--/ Add new question -->
 
@@ -45,7 +45,7 @@
                         clip-rule="evenodd"
                     />
                 </svg>
-                Delete
+                Obrisi
             </button>
             <!--/ Delete question -->
         </div>
@@ -58,7 +58,7 @@
             <label
                 :for="'question_text_' + model.data"
                 class="block text-sm font-medium text-gray-700"
-                >Question Text</label
+                >Pitanje</label
             >
             <input
                 type="text"
@@ -76,7 +76,7 @@
             <label
                 for="question_type"
                 class="block text-sm font-medium text-gray-700"
-                >Select Question Type</label
+                >Izaberite tip pitanja</label
             >
             <select
                 id="question_type"
@@ -98,7 +98,7 @@
         <label
             :for="'question_description_' + model.id"
             class="block text-sm font-medium text-gray-700"
-            >Description</label
+            >Opis pitanja</label
         >
         <textarea
             :name="'question_description_' + model.id"
@@ -117,7 +117,7 @@
             <h4
                 class="text-sm font-semibold mb-1 flex justify-between items-center"
             >
-                Options
+                Opcije
 
                 <!-- Add new option -->
                 <button
@@ -137,7 +137,7 @@
                             clip-rule="evenodd"
                         />
                     </svg>
-                    Add Option
+                    Dodaj opciju
                 </button>
                 <!--/ Add new option -->
             </h4>
@@ -147,7 +147,7 @@
                 v-if="!model.data.options.length"
                 class="text-xs text-gray-600 text-center py-3"
             >
-                You don't have any options defined
+                Jos uvek nemate definisanih opcija
             </div>
             <!-- Option list -->
             <!--iteriramo kroz opcije pitanja i prikazujemo ih-->

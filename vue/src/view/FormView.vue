@@ -5,7 +5,7 @@
             <div class="flex items-center justify-between">
                 <!--samo ispituje ima li model id, ako ne onda znaci da cemo dodavati novu formu pa je naslov drugaciji-->
                 <h1 class="text-3xl font-bold text-gray-900">
-                    {{ route.params.id ? model.title : "Create a Form" }}
+                    {{ route.params.id ? model.title : "Kreiraj test" }}
                 </h1>
 
                 <button
@@ -26,13 +26,13 @@
                             clip-rule="evenodd"
                         />
                     </svg>
-                    Delete Form
+                    Izbrisi test
                 </button>
             </div>
         </template>
         <!--kraj hedera-->
 
-        <div v-if="formLoading" class="flex justify-center">Loading...</div>
+        <div v-if="formLoading" class="flex justify-center">Ucitava se...</div>
         <form v-else @submit.prevent="saveForm">
             <div class="shadow sm:rounded-md sm:overflow-hidden">
                 <!--polja forme-->
@@ -40,7 +40,7 @@
                     <!-- Image -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700">
-                            Image
+                            Slika
                         </label>
                         <div class="mt-1 flex items-center">
                             <!--preko vue modela proveravamo ima li slike i na osnovu toga kazemo sta da prikaze-->
@@ -67,26 +67,27 @@
                                     />
                                 </svg>
                             </span>
-                            <!--ovde je dugme za ucitavanje slike-->
-                            <button
-                                type="button"
-                                class="relative overflow-hidden ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            >
-                                <!--ovde trigerujemo file picker-->
-                                <input
-                                    type="file"
-                                    @change="onImageAdd"
-                                    class="absolute left-0 top-0 right-0 bottom-0 opacity-0 cursor-pointer"
-                                />
-                                Change
-                            </button>
 
                             <!-- Photo from Domain-->
-                            <div class="mt-1 flex items-center">
-                                <input
-                                    placeholder="key word..."
-                                    v-model="search_word"
+                            <div
+                                class="grid grid-cols-1 gap-3 mt-1 flex items-center"
+                            >
+                                <button
+                                    type="button"
                                     class="relative overflow-hidden ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                >
+                                    <!--ovde trigerujemo file picker-->
+                                    <input
+                                        type="file"
+                                        @change="onImageAdd"
+                                        class="absolute left-0 top-0 right-0 bottom-0 opacity-0 cursor-pointer"
+                                    />
+                                    Ucitaj
+                                </button>
+                                <input
+                                    placeholder="..."
+                                    v-model="search_word"
+                                    class="relative overflow-hidden ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700"
                                 />
 
                                 <button
@@ -97,7 +98,7 @@
                                         @click="onPhotoAdd"
                                         class="absolute left-0 top-0 right-0 bottom-0 opacity-0 cursor-pointer"
                                     />
-                                    Generate
+                                    Izgenerisi
                                 </button>
                             </div>
                             <!-- Photo from domain kraj -->
@@ -110,7 +111,7 @@
                         <label
                             for="title"
                             class="block text-sm font-medium text-gray-700"
-                            >Title</label
+                            >Naslov</label
                         >
                         <input
                             type="text"
@@ -129,7 +130,7 @@
                             for="about"
                             class="block text-sm font-medium text-gray-700"
                         >
-                            Description
+                            Opis
                         </label>
                         <div class="mt-1">
                             <textarea
@@ -150,7 +151,7 @@
                         <label
                             for="expire_date"
                             class="block text-sm font-medium text-gray-700"
-                            >Expire Date</label
+                            >Rok vazenja</label
                         >
                         <input
                             type="date"
@@ -177,7 +178,7 @@
                             <label
                                 for="status"
                                 class="font-medium text-gray-700"
-                                >Active</label
+                                >Aktivan</label
                             >
                         </div>
                     </div>
@@ -189,7 +190,7 @@
                     <h3
                         class="text-2xl font-semibold flex items-center justify-between"
                     >
-                        Questions
+                        Pitanja
                         <!-- Add new question -->
                         <button
                             type="button"
@@ -208,7 +209,7 @@
                                     clip-rule="evenodd"
                                 />
                             </svg>
-                            Add Question
+                            Dodaj pitanje
                         </button>
                         <!--/ Add new question -->
                     </h3>
@@ -218,7 +219,7 @@
                         v-if="!model.questions.length"
                         class="text-center text-gray-600"
                     >
-                        You don't have any questions created
+                        Jos uvek nemate kreiranih pitanja
                     </div>
                     <div
                         v-for="(question, index) in model.questions"
@@ -243,7 +244,7 @@
                         type="submit"
                         class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
-                        Save
+                        Sacuvaj
                     </button>
                 </div>
             </div>
@@ -313,6 +314,7 @@ function onPhotoAdd() {
     store.dispatch("getPhotoFromDomain", search_word.value).then((res) => {
         console.log(res.data.value[0]);
         model.value.image_url = res.data.value[0].url;
+        model.value.image = res.data.value[0].url;
     });
 }
 
