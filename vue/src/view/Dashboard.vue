@@ -119,7 +119,7 @@
                         href="javascript:void(0)"
                         class="text-sm text-blue-500 hover:decoration-blue-500"
                     >
-                        Pregledaj sve
+                        <!--Pregledaj sve-->
                     </a>
                 </div>
 
