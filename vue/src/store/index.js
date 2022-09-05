@@ -202,21 +202,7 @@ const store = createStore({
       state.user.data = userData.user;
       sessionStorage.setItem("TOKEN", userData.token);
     },
-    /*
-    //azuriranje state.forms
-    updateForm: (state, form) => {
-      state.forms = state.forms.map((f) => {
-        if (f.id == form.data.id) {
-          return form.data;
-        }
-        return f;
-      });
-    },
-    //cuvanje nove forme, dodavanje forme na kraj niza
-    saveForm: (state, form) => {
-      state.forms = [...state.forms, form.data];
-    },
-    */
+
     setCurrentFormLoading: (state, loading) => {
       state.currentForm.loading = loading;
     },
